@@ -9,11 +9,12 @@
 | 检查 | 实际执行结果 |
 |---|---|
 | `uv run --frozen pytest` | 29 passed，2 个需要显式真机选择的测试 skipped |
+| `uv run --frozen pytest --device-serial auto -q` | 31 passed，27.51 秒；包含真实 MCP stdio 流程及辅助输入法恢复 |
 | `uv run --frozen ruff check .` | 通过 |
 | `uv run --frozen ruff format --check .` | 通过 |
 | `uv build --out-dir artifacts/dist` | wheel 与 sdist 构建通过 |
 | GitHub CI | Windows、Linux、macOS 均通过冻结依赖安装、29 项离线测试、Ruff 与打包；[运行记录](https://github.com/frank9306/android-use/actions/runs/37885748955) |
-| 完整真机验收 | 此前 29 项全套测试通过；新增 SDK 拒绝点击契约测试后，最终真机复核发生 USB 断开，等待重连后复测 |
+| 完整真机验收 | 通过；11 种 MCP 工具共 30 次调用全部符合预期；原输入法及启用状态恢复 |
 
 ## 已验证的真实链路
 
@@ -37,11 +38,11 @@
 
 MCP 协议测试使用官方 SDK 的真实内存传输，检查工具 schema、结构化错误和图片返回。SDK 契约测试使用固定版本的真实请求包装层，在 HTTP 边界注入丢失响应与 `false` 点击结果，验证不会重启重发、拒绝点击不会被吞掉。这些故障注入没有模拟真实的物理 USB 断线时序。
 
-## 待完成与限制
+## 设置恢复与限制
 
-最终真机复核时 USB 设备消失，恢复旋转设置的命令也未能连接到设备。已请求用户重新连接与确认原自动旋转设置；恢复后需完成当前版本 31 项测试的最终验收。
+此前真机复核时 USB 设备消失，导致该次测试及恢复命令中断。2026-10-09 用户重新连接手机，并确认原自动旋转关闭。恢复后重新执行当前版本的全部 31 项测试，结果全部通过。
 
-该次中断前设置过 `user_rotation=1` 与 `accelerometer_rotation=0`。原 `user_rotation=0`，原自动旋转值未保存，等待用户确认后恢复，不能猜测。后续测试已增加断线时保留恢复记录的机制。任务创建的 fixture App 仍在手机上，最终验收后需卸载。
+最终验收后独立读回确认 `user_rotation=0`、`accelerometer_rotation=0`。默认输入法与启用列表的恢复由真机测试断言验证，测试返回主页。任务创建的 `com.androiduse.fixture` 已卸载，ADB 返回 `Success`，随后查询该包不再返回安装路径；恢复记录文件已由测试在成功恢复后删除。测试保留断线时的恢复记录机制。
 
 交付 wheel/sdist 保留在 `artifacts/dist/`。自动审批拒绝删除本地临时 APK、签名、中间构建文件目录 `artifacts/fixture/` 及诊断文件 `artifacts/device-verification.json`，仅返回 `blocked by policy`。因此这些任务产物仍留在忽略目录中，未进入 Git。
 
@@ -51,4 +52,4 @@ MCP 协议测试使用官方 SDK 的真实内存传输，检查工具 schema、�
 
 审查范围为根提交 `0f40792a462018d84352b448aaf77a7391d494aa`，使用 `git show --format= --root 0f40792a462018d84352b448aaf77a7391d494aa` 与文件级阅读核对实现及 Issue 验收条件。
 
-发现一个 P2：方向滑动忽略 `coordinate_space`，把缩放截图区域当成原生区域。已增加回归测试，先观察测试失败，再限制方向滑动使用原生坐标；现有完整离线测试通过。未发现其他 P0/P1 问题，最终真机验证缺失仍阻止关闭 Issue。
+发现一个 P2：方向滑动忽略 `coordinate_space`，把缩放截图区域当成原生区域。已增加回归测试，先观察测试失败，再限制方向滑动使用原生坐标。修复后全部 31 项测试通过，未发现其他 P0/P1 问题，真机验证已完成。

@@ -1,12 +1,11 @@
 ---
 id: ISSUE-0001
 title: "Android automation MCP and real-device acceptance"
-status: blocked
+status: done
 priority: P1
 created: 2026-10-09
 updated: 2026-10-09
-closed:
-sources: ["https://github.com/openatx/uiautomator2"]
+closed: 2026-10-09
 related_adrs: []
 depends_on: []
 ---
@@ -28,7 +27,7 @@ Deliver a USB Android MCP server and CLI, validate against a connected device, c
 - [x] Observations contain compact hierarchy, screenshot metadata and coordinate mapping.
 - [x] Ambiguous selectors, stale/rotated coordinates and failed batches stop explicitly.
 - [x] Chinese input is read back and the original input method is restored.
-- [ ] Unit and MCP protocol tests pass; an isolated real-device workflow passes.
+- [x] Unit and MCP protocol tests pass; an isolated real-device workflow passes.
 - [x] Documentation, configuration examples and verification evidence are committed and pushed.
 
 ## Out of scope
@@ -52,19 +51,15 @@ Owned UI service shutdown precedes releasing the lease to prevent process handof
 
 ## Verification
 
-See [verification.md](../verification.md). 29 offline tests passed; real MCP and
-IME workflows passed before the final SDK acknowledgement fix. The latest
-device run was interrupted by a physical USB disconnection; final acceptance
-and screen-setting restoration await reconnection. Ruff and package builds pass.
-Windows, Linux and macOS GitHub CI passed for pushed commit `bc457f3`.
+uv run --frozen pytest --device-serial auto -q: 31 passed in 27.51s; 30 real MCP calls across all 11 tools; Chinese IME defaults/enabled state restored; rotation values read back as 0/0; fixture uninstall Success; Ruff, build and three-platform GitHub CI passed. See docs/verification.md.
 
-## Blocker and resumption
+## Resolved blocker
 
-ADB reports no device after USB disappeared during the final acceptance run.
-Reconnect the phone and confirm its original automatic rotation setting, restore
-`user_rotation=0` and the confirmed setting, then run all 31 tests with
-`--device-serial auto`. After passing, uninstall only the task-created fixture,
-record final evidence and close this Issue. Implementation and Git delivery are complete.
+USB disappeared during an earlier acceptance run. On 2026-10-09 the user
+reconnected the phone and confirmed automatic rotation was originally off.
+Restored `user_rotation=0` and `accelerometer_rotation=0`, then passed all 31 tests.
+Local ignored fixture build/diagnostic artifacts remain because automatic approval
+rejected cleanup; no APK, signing key or device identifier was committed.
 
 ## Activity log
 
@@ -85,6 +80,10 @@ No P0/P1 findings. Final device acceptance remains pending reconnection.
 
 ### 2026-10-09 — Status changed from in-progress to blocked.
 
+### 2026-10-09 — Status changed from blocked to in-progress.
+
+### 2026-10-09 — Status changed from in-progress to done.
+
 ## Completion summary
 
-Final USB device acceptance cannot finish because the phone disappeared from ADB; reconnection and the original automatic rotation setting are required for restoration and retesting.
+Delivered the 11-tool Android MCP server, JSON CLI/session and reproducible package; all 31 tests passed on the connected Android 15 device, settings restored and temporary fixture uninstalled; implementation committed and pushed.
