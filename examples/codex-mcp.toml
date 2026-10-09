@@ -1,0 +1,10 @@
+# Replace the project path with your actual absolute clone directory.
+[mcp_servers.android-use]
+command = "uv"
+args = ["--directory", "E:/private-store/myproject/private/android-use", "run", "--frozen", "android-use-mcp"]
+startup_timeout_sec = 30
+tool_timeout_sec = 120
+
+# Optional when more than one authorized device is connected:
+# [mcp_servers.android-use.env]
+# ANDROID_SERIAL = "YOUR_DEVICE_SERIAL"

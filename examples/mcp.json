@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "android-use": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/android-use",
+        "run",
+        "--frozen",
+        "android-use-mcp"
+      ]
+    }
+  }
+}

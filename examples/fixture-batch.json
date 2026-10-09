@@ -1,0 +1,21 @@
+{
+  "steps": [
+    {
+      "action": "launch_app",
+      "params": {"package": "com.androiduse.fixture", "activity": ".MainActivity"}
+    },
+    {
+      "action": "type_text",
+      "params": {"selector": {"resource_id": "com.androiduse.fixture:id/input"}, "text": "安卓自动化验证"}
+    },
+    {
+      "action": "tap",
+      "params": {"selector": {"resource_id": "com.androiduse.fixture:id/apply"}}
+    },
+    {
+      "action": "wait",
+      "params": {"selector": {"text": "Applied: 安卓自动化验证"}, "timeout": 5}
+    },
+    {"action": "press", "params": {"key": "home"}}
+  ]
+}

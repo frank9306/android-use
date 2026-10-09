@@ -1,0 +1,42 @@
+[project]
+name = "android-use"
+version = "0.1.0"
+description = "Observe and control Android devices through MCP and a JSON CLI"
+readme = "README.md"
+authors = [
+    { name = "Android Use contributors" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "mcp>=1.12,<2",
+    "pillow>=11,<13",
+    "pydantic>=2,<3",
+    "uiautomator2==3.7.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.15,<0.10.0"]
+build-backend = "uv_build"
+
+[project.scripts]
+android-use = "android_use.cli:main"
+android-use-mcp = "android_use.server:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.16.10",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = ["device: requires an explicitly selected, connected Android device and fixture APK"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
