@@ -1,7 +1,7 @@
 ---
 id: ISSUE-0002
 title: "Installable Codex plugin with Android skills and MCP"
-status: in-progress
+status: blocked
 priority: P1
 created: 2026-10-09
 updated: 2026-10-09
@@ -28,7 +28,7 @@ Provide a repository marketplace and Codex plugin bundling setup/control skills 
 - [x] The declared MCP launcher works from its installed copy with no checkout-specific paths.
 - [ ] Native Codex discovers both skills and all 11 MCP tools; the installed launcher passes the isolated real-device workflow.
 - [x] Installation instructions include a shareable one-sentence prompt and direct install commands.
-- [ ] Validation, review and verification evidence are committed and pushed.
+- [x] Validation, review and verification evidence are committed and pushed.
 
 ## Out of scope
 
@@ -59,6 +59,9 @@ After review fixes, 30 offline tests pass and both Ruff checks pass. Review of
 `89b274c..57dd7ed` found and fixed explicit device selection and bounded request
 waiting in validation helpers. The phone subsequently disconnected; real-device
 reverification needs a connected, unlocked phone.
+Remote Git marketplace installation, both skills and all 11 MCP tools pass.
+Windows, Linux and macOS CI pass for `50fb2f3`; see the linked run in
+docs/verification.md. Fix review of `57dd7ed..50fb2f3` found no new issues.
 
 ## Activity log
 
@@ -70,6 +73,8 @@ Issue created from the supplied project input.
 
 ### 2026-10-09 — Status changed from ready to in-progress.
 
+### 2026-10-09 — Status changed from in-progress to blocked.
+
 ## Completion summary
 
-Not completed.
+Plugin packaging and remote native installation are delivered. The remaining installed-plugin real-device workflow is blocked because the phone disconnected after a locked-screen run. Reconnect and unlock the phone to rerun the 32-test suite, confirm restored settings and uninstall the task fixture.

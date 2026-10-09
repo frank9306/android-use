@@ -12,13 +12,13 @@ None.
 
 ## In progress
 
-| ID | Title |
-|---|---|
-| [ISSUE-0002](ISSUE-0002-installable-codex-plugin-with-android-skills-and-mcp.md) | Installable Codex plugin with Android skills and MCP |
+None.
 
 ## Blocked
 
-None.
+| ID | Title |
+|---|---|
+| [ISSUE-0002](ISSUE-0002-installable-codex-plugin-with-android-skills-and-mcp.md) | Installable Codex plugin with Android skills and MCP |
 
 ## Done
 

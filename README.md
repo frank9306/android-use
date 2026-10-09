@@ -208,6 +208,12 @@ uv run --frozen pytest --device-serial auto
 uv run --frozen python scripts/check_plugin.py
 ```
 
+验证 GitHub 仓库市场（而非本地快照）：
+
+```powershell
+uv run --frozen python scripts/check_plugin.py --marketplace-source frank9306/android-use
+```
+
 安装自有测试 App 后，可在同一次验证中使用已安装插件的 MCP 执行完整真机验收：
 
 ```powershell
