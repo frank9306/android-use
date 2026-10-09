@@ -137,7 +137,7 @@ def create_server(controller: AndroidController | None = None) -> FastMCP:
         coordinate_space: str = "native",
         bounds: list[int] | None = None,
     ) -> CallToolResult:
-        """Swipe up/down/left/right, within observed native bounds, or between observed points."""
+        """Swipe direction in native space/bounds, or observed points in native/screenshot space."""
         return await invoke(
             controller.swipe,
             direction=direction,

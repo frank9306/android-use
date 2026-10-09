@@ -161,6 +161,20 @@ def test_directional_swipe_uses_current_screen_and_wait_has_a_finite_timeout(con
     assert failure.value.code == "wait_timeout"
 
 
+def test_directional_swipe_rejects_screenshot_bounds_before_dispatch(controller):
+    control, device = controller
+    observation = control.observe(screenshot=True, max_image_edge=1200)
+    with pytest.raises(AndroidUseError) as failure:
+        control.swipe(
+            direction="up",
+            bounds=[0, 0, 540, 1200],
+            coordinate_space="screenshot",
+            observation_id=observation["observation_id"],
+        )
+    assert failure.value.code == "invalid_argument"
+    assert device.calls == []
+
+
 def test_device_disconnect_does_not_switch_to_another_online_device(tmp_path):
     backend = BackendDouble()
     with AndroidController(serial="test-device", backend=backend, lock_dir=tmp_path) as control:

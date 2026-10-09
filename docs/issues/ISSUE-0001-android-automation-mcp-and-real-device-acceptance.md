@@ -52,7 +52,7 @@ Owned UI service shutdown precedes releasing the lease to prevent process handof
 
 ## Verification
 
-See [verification.md](../verification.md). 28 offline tests passed; real MCP and
+See [verification.md](../verification.md). 29 offline tests passed; real MCP and
 IME workflows passed before the final SDK acknowledgement fix. The latest
 device run was interrupted by a physical USB disconnection; final acceptance
 and screen-setting restoration await reconnection. Ruff and package builds pass.
@@ -66,6 +66,13 @@ Issue created from the supplied project input.
 ### 2026-10-09 — Status changed from proposed to ready.
 
 ### 2026-10-09 — Status changed from ready to in-progress.
+
+### 2026-10-09 — Root commit reviewed; directional-coordinate validation fixed
+
+Reviewed root commit `0f40792a462018d84352b448aaf77a7391d494aa`.
+One P2 finding: directional swipes ignored screenshot coordinate space.
+A failing regression test demonstrated the defect; native-space validation fixes it.
+No P0/P1 findings. Final device acceptance remains pending reconnection.
 
 ## Completion summary
 

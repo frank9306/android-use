@@ -8,7 +8,7 @@
 
 | 检查 | 实际执行结果 |
 |---|---|
-| `uv run --frozen pytest` | 28 passed，2 个需要显式真机选择的测试 skipped |
+| `uv run --frozen pytest` | 29 passed，2 个需要显式真机选择的测试 skipped |
 | `uv run --frozen ruff check .` | 通过 |
 | `uv run --frozen ruff format --check .` | 通过 |
 | `uv build --out-dir artifacts/dist` | wheel 与 sdist 构建通过 |
@@ -38,6 +38,12 @@ MCP 协议测试使用官方 SDK 的真实内存传输，检查工具 schema、�
 
 ## 待完成与限制
 
-最终真机复核时 USB 设备消失，恢复旋转设置的命令也未能连接到设备。已请求用户重新连接与确认原自动旋转设置；恢复后需完成当前版本 30 项测试的最终验收。
+最终真机复核时 USB 设备消失，恢复旋转设置的命令也未能连接到设备。已请求用户重新连接与确认原自动旋转设置；恢复后需完成当前版本 31 项测试的最终验收。
 
 只验证上述一台 Android 15 手机。GitHub CI 配置了 Windows、Linux、macOS 的离线检查，其云端结果尚未验证。未验证真实 `FLAG_SECURE` 页面、所有厂商权限、自绘/WebView 控件或 scrcpy 预览。受保护截图可能失败或含黑色区域，不能由普通截图接口可靠判定原因。
+
+## 提交审查
+
+审查范围为根提交 `0f40792a462018d84352b448aaf77a7391d494aa`，使用 `git show --format= --root 0f40792a462018d84352b448aaf77a7391d494aa` 与文件级阅读核对实现及 Issue 验收条件。
+
+发现一个 P2：方向滑动忽略 `coordinate_space`，把缩放截图区域当成原生区域。已增加回归测试，先观察测试失败，再限制方向滑动使用原生坐标；现有完整离线测试通过。未发现其他 P0/P1 问题，最终真机验证缺失仍阻止关闭 Issue。

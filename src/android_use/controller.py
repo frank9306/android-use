@@ -391,6 +391,10 @@ class AndroidController:
             info, hierarchy = self._read(device)
             width, height = info["width"], info["height"]
             if direction is not None:
+                if coordinate_space != "native":
+                    raise AndroidUseError(
+                        "invalid_argument", "Directional swipes require native coordinates"
+                    )
                 if (
                     not isinstance(direction, str)
                     or direction not in {"up", "down", "left", "right"}
