@@ -1,6 +1,6 @@
 # Android Use
 
-可直接安装的 **Codex 安卓手机插件**，包含设备准备与手机操作两个 Skill，以及基于 UIAutomator2 + USB ADB 的 11 个 MCP 工具；也可独立使用 JSON 命令行和持久化会话。Python 3.12，支持 Windows、macOS、Linux；已在 Windows + Android 15 真机验证。
+可直接安装的 **Codex 安卓手机插件**，包含设备准备与手机操作两个 Skill，以及基于 UIAutomator2 + USB ADB 的 11 个 MCP 工具；也可独立使用 JSON 命令行和持久化会话。Python 3.12，支持 Windows、macOS、Linux；底层工具已在 Windows + Android 15 真机验证，插件验证范围见下文。
 
 ```text
 AI / MCP 客户端
@@ -18,7 +18,7 @@ Android Use 控制器
 
 向能执行本地命令的 Codex 发送这一句即可开始安装：
 
-> 请将 https://github.com/frank9306/android-use 添加为 Codex 插件市场，安装 android-use@android-use，然后使用插件的 android-setup Skill 检查 uv、ADB 和手机连接；保留已有配置，需要手机端 USB 调试授权时提示我处理。
+> 请将 https://github.com/frank9306/android-use 添加为 Codex 插件市场，安装 android-use@android-use，安装后在新会话中使用 $android-use:android-setup 检查 uv、ADB 和手机连接；保留已有配置，需要手机端 USB 调试授权或解锁时提示我处理。
 
 也可以直接运行 Codex CLI（需要支持 `codex plugin` 的版本）：
 
@@ -34,7 +34,7 @@ codex plugin list --marketplace android-use
 
 准备完成后直接交代任务，例如“使用 Android Use 打开系统设置，观察页面，并在关键操作后确认结果”。也可显式调用 `$android-use:android-control`。
 
-安装结果：
+最终安装的是 **Android Use Codex 插件**，插件内统一提供以下组件：
 
 | 组件 | 用途 |
 |---|---|
@@ -221,6 +221,14 @@ uv run --frozen python scripts/check_plugin.py --device-serial auto
 ```
 
 此验证使用本机 Codex 导出的插件协议。Skill 的对话触发与安装后设备准备页面仍应在目标客户端中人工检查；插件验证不将静态 Skill 校验当成真实对话测试。
+
+### 当前验证状态（2026-10-09）
+
+- **插件安装与加载通过**：使用 Codex CLI `0.162.0-alpha.2` 从 GitHub 仓库市场安装，原生发现两个 Skill，启动安装目录中的 MCP 并发现全部 11 个工具。
+- **离线测试与 CI 通过**：30 项离线测试通过，2 项真机测试按默认配置跳过；Windows、Linux、macOS 的 Ruff、测试和打包均通过，见 [CI 运行记录](https://github.com/frank9306/android-use/actions/runs/37895817694)。
+- **已安装插件的完整真机验收尚未通过**：该次运行 30 passed、2 failed，原因是手机锁屏休眠、测试 App 无法进入前台；随后手机断开，需重新连接并解锁后复测并清理测试 App。底层工具在插件封装前的 31 项真机测试已通过。
+
+详细验收过程与未验证范围见 [验证记录](docs/verification.md)。
 
 ## 错误与边界
 
