@@ -1,7 +1,7 @@
 ---
 id: ISSUE-0001
 title: "Android automation MCP and real-device acceptance"
-status: in-progress
+status: blocked
 priority: P1
 created: 2026-10-09
 updated: 2026-10-09
@@ -29,7 +29,7 @@ Deliver a USB Android MCP server and CLI, validate against a connected device, c
 - [x] Ambiguous selectors, stale/rotated coordinates and failed batches stop explicitly.
 - [x] Chinese input is read back and the original input method is restored.
 - [ ] Unit and MCP protocol tests pass; an isolated real-device workflow passes.
-- [ ] Documentation, configuration examples and verification evidence are committed and pushed.
+- [x] Documentation, configuration examples and verification evidence are committed and pushed.
 
 ## Out of scope
 
@@ -56,6 +56,15 @@ See [verification.md](../verification.md). 29 offline tests passed; real MCP and
 IME workflows passed before the final SDK acknowledgement fix. The latest
 device run was interrupted by a physical USB disconnection; final acceptance
 and screen-setting restoration await reconnection. Ruff and package builds pass.
+Windows, Linux and macOS GitHub CI passed for pushed commit `bc457f3`.
+
+## Blocker and resumption
+
+ADB reports no device after USB disappeared during the final acceptance run.
+Reconnect the phone and confirm its original automatic rotation setting, restore
+`user_rotation=0` and the confirmed setting, then run all 31 tests with
+`--device-serial auto`. After passing, uninstall only the task-created fixture,
+record final evidence and close this Issue. Implementation and Git delivery are complete.
 
 ## Activity log
 
@@ -74,6 +83,8 @@ One P2 finding: directional swipes ignored screenshot coordinate space.
 A failing regression test demonstrated the defect; native-space validation fixes it.
 No P0/P1 findings. Final device acceptance remains pending reconnection.
 
+### 2026-10-09 — Status changed from in-progress to blocked.
+
 ## Completion summary
 
-Not completed.
+Final USB device acceptance cannot finish because the phone disappeared from ADB; reconnection and the original automatic rotation setting are required for restoration and retesting.

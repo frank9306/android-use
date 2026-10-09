@@ -12,13 +12,13 @@ None.
 
 ## In progress
 
-| ID | Title |
-|---|---|
-| [ISSUE-0001](ISSUE-0001-android-automation-mcp-and-real-device-acceptance.md) | Android automation MCP and real-device acceptance |
+None.
 
 ## Blocked
 
-None.
+| ID | Title |
+|---|---|
+| [ISSUE-0001](ISSUE-0001-android-automation-mcp-and-real-device-acceptance.md) | Android automation MCP and real-device acceptance |
 
 ## Done
 

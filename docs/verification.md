@@ -12,6 +12,7 @@
 | `uv run --frozen ruff check .` | 通过 |
 | `uv run --frozen ruff format --check .` | 通过 |
 | `uv build --out-dir artifacts/dist` | wheel 与 sdist 构建通过 |
+| GitHub CI | Windows、Linux、macOS 均通过冻结依赖安装、29 项离线测试、Ruff 与打包；[运行记录](https://github.com/frank9306/android-use/actions/runs/37885748955) |
 | 完整真机验收 | 此前 29 项全套测试通过；新增 SDK 拒绝点击契约测试后，最终真机复核发生 USB 断开，等待重连后复测 |
 
 ## 已验证的真实链路
@@ -40,7 +41,11 @@ MCP 协议测试使用官方 SDK 的真实内存传输，检查工具 schema、�
 
 最终真机复核时 USB 设备消失，恢复旋转设置的命令也未能连接到设备。已请求用户重新连接与确认原自动旋转设置；恢复后需完成当前版本 31 项测试的最终验收。
 
-只验证上述一台 Android 15 手机。GitHub CI 配置了 Windows、Linux、macOS 的离线检查，其云端结果尚未验证。未验证真实 `FLAG_SECURE` 页面、所有厂商权限、自绘/WebView 控件或 scrcpy 预览。受保护截图可能失败或含黑色区域，不能由普通截图接口可靠判定原因。
+该次中断前设置过 `user_rotation=1` 与 `accelerometer_rotation=0`。原 `user_rotation=0`，原自动旋转值未保存，等待用户确认后恢复，不能猜测。后续测试已增加断线时保留恢复记录的机制。任务创建的 fixture App 仍在手机上，最终验收后需卸载。
+
+交付 wheel/sdist 保留在 `artifacts/dist/`。自动审批拒绝删除本地临时 APK、签名、中间构建文件目录 `artifacts/fixture/` 及诊断文件 `artifacts/device-verification.json`，仅返回 `blocked by policy`。因此这些任务产物仍留在忽略目录中，未进入 Git。
+
+只验证上述一台 Android 15 手机。未验证真实 `FLAG_SECURE` 页面、所有厂商权限、自绘/WebView 控件或 scrcpy 预览。受保护截图可能失败或含黑色区域，不能由普通截图接口可靠判定原因。
 
 ## 提交审查
 
