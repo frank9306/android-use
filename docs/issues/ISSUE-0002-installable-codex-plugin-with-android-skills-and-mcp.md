@@ -55,6 +55,10 @@ Both skills validate. Independent-directory MCP startup and native Codex install
 skill discovery and all 11 tools pass. Full installed-plugin run: 30 passed,
 2 failed because the connected phone is locked/asleep; unlock requested.
 See docs/verification.md. Runtime implementation remains unchanged.
+After review fixes, 30 offline tests pass and both Ruff checks pass. Review of
+`89b274c..57dd7ed` found and fixed explicit device selection and bounded request
+waiting in validation helpers. The phone subsequently disconnected; real-device
+reverification needs a connected, unlocked phone.
 
 ## Activity log
 

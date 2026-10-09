@@ -52,7 +52,10 @@ class AppServer:
         self.send({"id": request_id, "method": method, "params": params})
         deadline = time.monotonic() + 150
         while True:
-            message = self.messages.get(timeout=max(0.01, deadline - time.monotonic()))
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError(f"Codex app-server did not respond to {method} within 150s")
+            message = self.messages.get(timeout=remaining)
             if message is None:
                 raise RuntimeError("Codex app-server exited before responding")
             if message.get("id") == request_id:

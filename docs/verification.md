@@ -65,8 +65,11 @@ Codex CLI：`0.162.0-alpha.2`。插件：`android-use@android-use`，版本 `0.1
 | 原生 Codex 插件安装 | 通过；隔离配置中执行 marketplace add、plugin add、plugin list，确认 enabled |
 | 原生 Skill 发现 | 通过；`android-use:android-setup` 与 `android-use:android-control` |
 | 原生 MCP 发现 | 通过；Codex app-server 实际启动打包服务并发现全部 11 个工具；安装缓存创建独立 `.venv` |
+| 插件封装后的离线测试 | 30 passed，2 个需要显式真机选择的测试 skipped；Ruff 检查及格式检查通过 |
 | 已安装插件的完整真机测试 | 30 passed，2 failed；手机锁屏休眠导致 App 未进入前台，等待解锁后复测 |
 
 测试先复现缺失打包启动配置的失败，再增加配置。原生安装验证还发现路径占位启动握手失败，改为让 Codex 将相对 `cwd` 解析到安装目录后，原生 MCP 发现通过。验收脚本 `scripts/check_plugin.py` 使用临时 Codex 配置与干净插件快照，不读取或复制用户凭据、不更改既有客户端配置、不请求模型。协议请求按本机 Codex 导出的 JSON Schema 编写；原生安装与发现结果来自实际客户端，未使用手写插件管理 mock。
 
 此阶段不重复声称已安装插件的手机操作通过。Skill 对话触发与客户端设备准备页面尚未进行模型对话/UI 测试；静态校验及原生发现只证明包可被加载。
+
+插件提交审查使用 `git diff 89b274c..57dd7ed`。发现验收脚本的两项 P2：已安装启动器未接收显式选择的设备，及持续收到通知时请求等待可能超过期限。已分别固定子进程的 `ANDROID_SERIAL` 和检查请求期限；未改变运行时手机控制接口。修正后离线测试 30 项通过，真机复测还需要已连接且解锁的手机。后续 ADB 检查时设备已断开。

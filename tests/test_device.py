@@ -45,7 +45,11 @@ async def test_real_device_mcp_workflow(device_serial, request):
     original_auto = adb(
         device_serial, "shell", "settings", "get", "system", "accelerometer_rotation"
     )
-    environment = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+    environment = {
+        **os.environ,
+        "PYTHONIOENCODING": "utf-8",
+        "ANDROID_SERIAL": device_serial,
+    }
     restore_file = Path("artifacts/device-settings-restore.json")
     if restore_file.exists():
         pytest.fail("Recover the previous test using artifacts/device-settings-restore.json first")
