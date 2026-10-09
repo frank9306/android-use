@@ -4,7 +4,7 @@
 
 执行依赖：uiautomator2 3.7.0、MCP Python SDK 1.30.0、adbutils 2.12.0、Pillow 12.3.0、Pydantic 2.14.0。完整解析结果在 `uv.lock`，运行使用 `--frozen`。
 
-## 当前结果
+## 基础工具验收（插件封装前）
 
 | 检查 | 实际执行结果 |
 |---|---|
@@ -53,3 +53,20 @@ MCP 协议测试使用官方 SDK 的真实内存传输，检查工具 schema、�
 审查范围为根提交 `0f40792a462018d84352b448aaf77a7391d494aa`，使用 `git show --format= --root 0f40792a462018d84352b448aaf77a7391d494aa` 与文件级阅读核对实现及 Issue 验收条件。
 
 发现一个 P2：方向滑动忽略 `coordinate_space`，把缩放截图区域当成原生区域。已增加回归测试，先观察测试失败，再限制方向滑动使用原生坐标。修复后全部 31 项测试通过，未发现其他 P0/P1 问题，真机验证已完成。
+
+## Codex 插件封装验收
+
+Codex CLI：`0.162.0-alpha.2`。插件：`android-use@android-use`，版本 `0.1.0`。封装使用受支持的 `.codex-plugin/plugin.json`、`.mcp.json` 和仓库 marketplace，格式依据 [OpenAI 官方插件文档](https://developers.openai.com/plugins/build/plugins)。
+
+| 检查 | 实际执行结果 |
+|---|---|
+| 两个 Skill 的 `quick_validate.py` | 均通过 |
+| 独立目录 MCP 启动测试 | 通过；真实 stdio 初始化、发现全部 11 个工具、查询设备；路径含空格 |
+| 原生 Codex 插件安装 | 通过；隔离配置中执行 marketplace add、plugin add、plugin list，确认 enabled |
+| 原生 Skill 发现 | 通过；`android-use:android-setup` 与 `android-use:android-control` |
+| 原生 MCP 发现 | 通过；Codex app-server 实际启动打包服务并发现全部 11 个工具；安装缓存创建独立 `.venv` |
+| 已安装插件的完整真机测试 | 30 passed，2 failed；手机锁屏休眠导致 App 未进入前台，等待解锁后复测 |
+
+测试先复现缺失打包启动配置的失败，再增加配置。原生安装验证还发现路径占位启动握手失败，改为让 Codex 将相对 `cwd` 解析到安装目录后，原生 MCP 发现通过。验收脚本 `scripts/check_plugin.py` 使用临时 Codex 配置与干净插件快照，不读取或复制用户凭据、不更改既有客户端配置、不请求模型。协议请求按本机 Codex 导出的 JSON Schema 编写；原生安装与发现结果来自实际客户端，未使用手写插件管理 mock。
+
+此阶段不重复声称已安装插件的手机操作通过。Skill 对话触发与客户端设备准备页面尚未进行模型对话/UI 测试；静态校验及原生发现只证明包可被加载。

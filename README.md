@@ -1,6 +1,6 @@
 # Android Use
 
-通过 **MCP + UIAutomator2 + USB ADB** 观察和操作安卓真机，提供 11 个工具、JSON 命令行和持久化会话。Python 3.12，支持 Windows、macOS、Linux；已在 Windows + Android 15 真机验证。
+可直接安装的 **Codex 安卓手机插件**，包含设备准备与手机操作两个 Skill，以及基于 UIAutomator2 + USB ADB 的 11 个 MCP 工具；也可独立使用 JSON 命令行和持久化会话。Python 3.12，支持 Windows、macOS、Linux；已在 Windows + Android 15 真机验证。
 
 ```text
 AI / MCP 客户端
@@ -14,7 +14,39 @@ Android Use 控制器
 
 工具本身不调用模型 API，不需要 API Key。模型通过 MCP 获取界面并决定动作。移动端服务由 `uiautomator2` 首次连接时部署；无需 root。
 
-## 安装与设备检查
+## 在 Codex 中安装插件
+
+向能执行本地命令的 Codex 发送这一句即可开始安装：
+
+> 请将 https://github.com/frank9306/android-use 添加为 Codex 插件市场，安装 android-use@android-use，然后使用插件的 android-setup Skill 检查 uv、ADB 和手机连接；保留已有配置，需要手机端 USB 调试授权时提示我处理。
+
+也可以直接运行 Codex CLI（需要支持 `codex plugin` 的版本）：
+
+```powershell
+codex plugin marketplace add frank9306/android-use
+codex plugin add android-use@android-use
+codex plugin list --marketplace android-use
+```
+
+安装后启动新会话，使用插件的设备准备入口，或输入：
+
+> 使用 $android-use:android-setup 检查依赖和手机连接。
+
+准备完成后直接交代任务，例如“使用 Android Use 打开系统设置，观察页面，并在关键操作后确认结果”。也可显式调用 `$android-use:android-control`。
+
+安装结果：
+
+| 组件 | 用途 |
+|---|---|
+| `android-setup` Skill | 依赖检查、USB 授权、连接故障处理 |
+| `android-control` Skill | 控件定位、截图坐标、动作核验与错误恢复 |
+| `android-use` MCP | 11 个真实手机操作工具 |
+
+插件通过仓库市场分发；格式依据 [OpenAI 插件文档](https://developers.openai.com/plugins/build/plugins)。本地 USB 操作由电脑执行，使用支持本地插件与 stdio MCP 的 Codex 客户端。首次启动需要 `uv` 和网络以准备 Python 3.12 及锁定的运行依赖；设备准备 Skill 会检查 `uv`、ADB 和 USB 调试状态。手机端调试授权需要用户确认。
+
+MCP 已随插件声明，会从安装缓存目录启动。**插件用户无需另行执行 `codex mcp add`，也无需把 Skill 复制到全局目录。** 首次准备可能比后续启动慢；MCP 启动超时设置为 120 秒。
+
+## 独立安装与设备检查
 
 准备 Python 3.12、[uv](https://docs.astral.sh/uv/getting-started/installation/) 和 [Android Platform Tools](https://developer.android.com/tools/releases/platform-tools)，确保 `adb` 可在终端使用。
 
@@ -38,9 +70,9 @@ uv run --frozen android-use ready
 
 也可以使用 `android-use --serial SERIAL ready`。同一设备只允许一个 Android Use 进程持有控制权；关闭旧 MCP 会话后才能用另一个 MCP 或 CLI 进程操作。`devices` 不占用控制权。
 
-## 接入 MCP 客户端
+## 独立接入 MCP 客户端
 
-启动命令：
+以下方式适用于未通过插件安装的用户。启动命令：
 
 ```powershell
 uv run --frozen android-use-mcp
@@ -165,6 +197,24 @@ uv run --frozen pytest --device-serial auto
 多台设备时用 `adb -s SERIAL install ...` 和 `pytest --device-serial SERIAL`。测试会临时旋转屏幕，随后恢复旋转设置与输入法并返回主页。如果测试中断线，原旋转设置保存在忽略的 `artifacts/device-settings-restore.json`；先按记录恢复，删除恢复文件后再复测。测试 App 不修改生产应用数据。复测已有**本项目生成**的测试 App 时可用 `adb install -r`。验收完成后可运行 `adb uninstall com.androiduse.fixture` 删除它。
 
 版本与验证范围见 [docs/verification.md](docs/verification.md)。APK、签名密钥、截图和诊断输出位于忽略的 `artifacts/`；仓库不保存手机序列号或用户应用画面。
+
+## 插件开发验证
+
+结构包含 `.codex-plugin/plugin.json`、`.mcp.json`、`skills/` 与 `.agents/plugins/marketplace.json`。MCP 的相对 `cwd` 由 Codex 解析为安装目录，不依赖开发者的本机路径。
+
+默认测试会从独立目录启动打包的 MCP，进行真实 stdio 初始化与工具查询。下面的额外验证需要本机 Codex CLI；它在临时配置目录中安装插件，并通过 Codex 原生 app-server 协议检查 Skill 与 MCP 发现，不请求模型，也不改已有客户端配置：
+
+```powershell
+uv run --frozen python scripts/check_plugin.py
+```
+
+安装自有测试 App 后，可在同一次验证中使用已安装插件的 MCP 执行完整真机验收：
+
+```powershell
+uv run --frozen python scripts/check_plugin.py --device-serial auto
+```
+
+此验证使用本机 Codex 导出的插件协议。Skill 的对话触发与安装后设备准备页面仍应在目标客户端中人工检查；插件验证不将静态 Skill 校验当成真实对话测试。
 
 ## 错误与边界
 

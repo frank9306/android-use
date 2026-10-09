@@ -33,7 +33,7 @@ def adb(serial, *args):
 
 
 @pytest.mark.device
-async def test_real_device_mcp_workflow(device_serial):
+async def test_real_device_mcp_workflow(device_serial, request):
     assert adb(device_serial, "shell", "pm", "path", PACKAGE).startswith("package:"), (
         "Install the fixture APK first"
     )
@@ -67,6 +67,17 @@ async def test_real_device_mcp_workflow(device_serial):
         args=["-m", "android_use.server", "--serial", device_serial],
         env=environment,
     )
+    plugin_root = request.config.getoption("--plugin-root")
+    if plugin_root:
+        launch = json.loads((Path(plugin_root) / ".mcp.json").read_text(encoding="utf-8"))[
+            "mcpServers"
+        ]["android-use"]
+        parameters = StdioServerParameters(
+            command=launch["command"],
+            args=launch["args"],
+            cwd=str(Path(plugin_root) / launch["cwd"]),
+            env=environment,
+        )
     evidence = {"transport": "MCP stdio / USB ADB", "fixture": PACKAGE, "checks": []}
     try:
         async with stdio_client(parameters) as (reader, writer):

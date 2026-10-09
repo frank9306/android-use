@@ -3,6 +3,11 @@ import pytest
 
 def pytest_addoption(parser):
     parser.addoption(
+        "--plugin-root",
+        default=None,
+        help="Use an installed plugin's bundled MCP launcher in the real-device workflow",
+    )
+    parser.addoption(
         "--device-serial",
         default=None,
         help="Opt in to real-device tests: an ADB serial or 'auto' for one online device",

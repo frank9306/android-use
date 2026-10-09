@@ -1,0 +1,6 @@
+interface:
+  display_name: "Android 插件设备准备"
+  short_description: "Set up Android Use and diagnose USB connections"
+  default_prompt: "使用 $android-use:android-setup 检查 Android Use 插件依赖和手机连接，完成设备准备。"
+policy:
+  allow_implicit_invocation: true

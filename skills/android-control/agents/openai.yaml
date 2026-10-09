@@ -1,0 +1,11 @@
+interface:
+  display_name: "Android 手机操作"
+  short_description: "Observe and control Android phones over USB"
+  default_prompt: "使用 $android-use:android-control 检查手机，并根据当前页面完成我的操作任务。"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "android-use"
+      description: "Local USB Android observation and control tools"
+policy:
+  allow_implicit_invocation: true

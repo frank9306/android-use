@@ -1,0 +1,25 @@
+{
+  "name": "android-use",
+  "version": "0.1.0",
+  "description": "Observe and control Android phones over USB with skills and MCP tools.",
+  "author": { "name": "Android Use contributors" },
+  "repository": "https://github.com/frank9306/android-use",
+  "homepage": "https://github.com/frank9306/android-use#readme",
+  "keywords": ["android", "adb", "uiautomator2", "automation"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Android Use",
+    "shortDescription": "Control Android phones over USB",
+    "longDescription": "Connect a local Android phone, inspect its screen and controls, and execute verified tasks using 11 MCP tools. Includes device setup and Android control skills.",
+    "developerName": "Android Use contributors",
+    "category": "Developer Tools",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": ["使用 Android Use 检查手机连接，并观察当前页面。"]
+  },
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/android-setup/SKILL.md"
+    }
+  }
+}
